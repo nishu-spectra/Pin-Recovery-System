@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PIN Recovery of NT Recharge Card</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="topbar">
+      <div class="topwrap">
+        <div class="logoBox">
+          <div class="logoText">NT<br />LOGO</div>
+        </div>
+        <div class="brand">
+          <div class="title">PIN Recovery of NT Recharge Card</div>
+          <div class="subtitle">Nepal Doorsanchar Company Limited</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="contentGrid">
+        <!-- Left -->
+        <section class="panel">
+          <h3 class="welcome">Welcome to Recharge Card Support!!!</h3>
+          <p class="info">
+            In order to recharge your service number, you need to provide the
+            following information.
+          </p>
+
+          <hr class="sep" />
+
+          <form
+            id="recoveryForm"
+            method="POST"
+            action="submit.php"
+            onsubmit="return validateForm();"
+          >
+            <!-- SERVICE TYPE -->
+            <div class="row">
+              <label class="label">SERVICE TYPE:</label>
+              <select id="serviceType" name="serviceType" required>
+                <option value="">-- Select --</option>
+                <option>GSM/CDMA Prepaid</option>
+                <option>GSM/CDMA Postpaid</option>
+                <option>PSTN Postpaid</option>
+                <option>ADSL Prepaid</option>
+              </select>
+            </div>
+
+            <!-- SERVICE NUMBER -->
+            <div class="row">
+              <label class="label">SERVICE NUMBER:</label>
+              <input
+                id="serviceNumber"
+                name="serviceNumber"
+                type="text"
+                placeholder="eg. 98510XXXXX"
+                required
+              />
+            </div>
+
+            <!-- SERIAL NUMBER -->
+            <div class="row">
+              <label class="label">SERIAL NUMBER:</label>
+              <div class="inputTools">
+                <input
+                  type="password"
+                  id="serialNumber"
+                  name="serialNumber"
+                  placeholder="eg. 1119040040000001"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toolBtn"
+                  onclick="toggleVisibility('serialNumber')"
+                >
+                  👁️
+                </button>
+                <button
+                  type="button"
+                  class="toolBtn"
+                  onclick="openCamera('serialNumber')"
+                >
+                  📷
+                </button>
+                <button
+                  type="button"
+                  class="toolBtn"
+                  onclick="openFile('serialNumber')"
+                >
+                  🖼️
+                </button>
+              </div>
+              <div id="serialError" class="errorMsg"></div>
+            </div>
+
+            <!-- PIN -->
+            <div class="row">
+              <label class="label">PIN CODE:</label>
+              <div class="inputTools">
+                <input
+                  type="password"
+                  id="pinCode"
+                  name="pinCode"
+                  placeholder="Eg. 123*4589****2345"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toolBtn"
+                  onclick="toggleVisibility('pinCode')"
+                >
+                  👁️
+                </button>
+                <button
+                  type="button"
+                  class="toolBtn"
+                  onclick="openCamera('pinCode')"
+                >
+                  📷
+                </button>
+                <button
+                  type="button"
+                  class="toolBtn"
+                  onclick="openFile('pinCode')"
+                >
+                  🖼️
+                </button>
+              </div>
+              <div id="pinError" class="errorMsg"></div>
+            </div>
+
+            <!-- CAPTCHA -->
+            <div class="row">
+              <label class="label">CAPTCHA:</label>
+              <input
+                id="captchaInput"
+                name="captchaInput"
+                type="text"
+                placeholder="Please input the characters seen below"
+                required
+              />
+              <div class="captchaRow">
+                <div class="captchaBox" id="captchaText">----</div>
+                <button type="button" class="btn" id="refreshCaptcha">
+                  Refresh
+                </button>
+              </div>
+            </div>
+
+            <!-- HIDDEN -->
+            <input type="hidden" name="captchaText" id="captchaHidden" />
+            <input
+              type="hidden"
+              name="ocrSource"
+              id="ocrSource"
+              value="manual"
+            />
+
+            <!-- ACTIONS -->
+            <div class="actions">
+              <button class="btn primary" type="submit">Submit</button>
+              <button
+                class="btn"
+                type="button"
+                onclick="
+                  document.getElementById('recoveryForm').reset();
+                  generateCaptcha();
+                "
+              >
+                Reset
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Right -->
+        <aside class="panel">
+          <h2 class="instrTitle">Instruction</h2>
+          <hr class="sep" />
+          <ul class="instructions">
+            <li>
+              Provide serial number, visible PIN digits and service number.
+            </li>
+            <li>At least <b>6 visible digits</b> required.</li>
+            <li>Use <b>*</b> for damaged digits.</li>
+            <li>Max <b>5 attempts</b> allowed.</li>
+          </ul>
+        </aside>
+      </div>
+    </main>
+
+    <!-- CAMERA -->
+    <div id="cameraModal" class="modal">
+      <div class="modalInner">
+        <video id="video" autoplay></video>
+        <button class="btn primary" onclick="captureImage()">Capture</button>
+        <button class="btn" onclick="closeCamera()">Close</button>
+        <canvas id="canvas"></canvas>
+      </div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*" hidden />
+    <script src="script.js"></script>
+  </body>
+</html>
